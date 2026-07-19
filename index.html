@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KateMathAI - Giải toán trực quan</title>
     <style>
-        /* Tải phông chữ phong cách Bronco Vintage từ Google Fonts */
         @import url('https://googleapis.com');
-
-        /* Thiết lập nền trình duyệt xám sẫm */
         body {
             background-color: #333639;
             display: flex;
@@ -18,20 +15,16 @@
             margin: 0;
             font-family: "Times New Roman", Times, Georgia, serif;
         }
-
-        /* Khung container chính giữ đúng tỷ lệ to rộng rộng rãi */
         .main-container {
             width: 95%;
             max-width: 1000px;
-            background-color: #F4EAD4; /* Màu nền vàng kem vintage */
-            border: 20px solid #5A3516; /* Viền gỗ nâu dày dặn */
+            background-color: #F4EAD4;
+            border: 20px solid #5A3516;
             border-radius: 4px;
             padding: 60px 50px;
             box-shadow: 0px 15px 35px rgba(0, 0, 0, 0.6);
             box-sizing: border-box;
         }
-
-        /* Khối tiêu đề cấu trúc phông chữ Bronco cổ điển */
         .app-title {
             text-align: center;
             margin-top: 0;
@@ -43,23 +36,17 @@
             letter-spacing: 2px;
             user-select: none;
         }
-
-        /* Chữ KATEMATH - Tông màu nâu đỏ trầm giống dòng dưới ảnh mẫu */
         .app-title .brand-name {
-            color: #A34828; 
+            color: #613414; 
             display: inline-block;
             text-shadow: 2px 2px 0px #F4EAD4, 3px 3px 0px #5A3516;
         }
-
-        /* Chữ AI - Tông màu nâu hạt dẻ đậm giống chữ BRONCO ở dòng trên */
         .app-title .ai-text {
             color: #613414; 
-            margin-left: 25px; /* Tách nhẹ chữ AI ra */
+            margin-left: 10px;
             display: inline-block;
             text-shadow: 2px 2px 0px #F4EAD4, 3px 3px 0px #5A3516;
         }
-
-        /* Hàng điều khiển gồm ô nhập liệu và nút bấm */
         .input-row {
             display: flex;
             align-items: center;
@@ -67,15 +54,12 @@
             margin-bottom: 35px;
             width: 100%;
         }
-
         .input-wrapper {
             position: relative;
             flex: 1;
             display: flex;
             align-items: center;
         }
-
-        /* Ô nhập đề bài to rộng */
         .math-input {
             width: 100%;
             height: 52px;
@@ -89,13 +73,10 @@
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
             box-sizing: border-box;
         }
-
         .math-input::placeholder {
             color: #A69B82;
             font-style: italic;
         }
-
-        /* Nút biểu tượng camera */
         .camera-btn {
             position: absolute;
             right: 18px;
@@ -107,14 +88,7 @@
             display: flex;
             align-items: center;
             opacity: 0.8;
-            transition: opacity 0.2s;
         }
-
-        .camera-btn:hover {
-            opacity: 1;
-        }
-
-        /* Nút Giải mã màu nâu đậm bám sát ảnh mẫu */
         .submit-btn {
             background-color: #5A3516;
             color: #FFFFFF;
@@ -128,14 +102,7 @@
             cursor: pointer;
             white-space: nowrap;
             box-shadow: 0 4px 6px rgba(0,0,0,0.15);
-            transition: background-color 0.2s;
         }
-
-        .submit-btn:hover {
-            background-color: #44270F;
-        }
-
-        /* Khung hiển thị kết quả nét đứt to rộng đúng tỷ lệ */
         .result-box {
             border: 2px dashed #CBBFA2;
             min-height: 420px;
@@ -144,10 +111,7 @@
             align-items: center;
             padding: 30px;
             box-sizing: border-box;
-            background-color: transparent;
         }
-
-        /* Chữ thông báo mặc định ở trung tâm nét đứt */
         .placeholder-text {
             font-size: 24px;
             font-style: italic;
@@ -157,8 +121,6 @@
             margin: 0;
             font-family: "Times New Roman", Times, serif;
         }
-
-        /* Khung hiển thị video đầu ra */
         .output-video {
             width: 100%;
             max-height: 400px;
@@ -168,68 +130,47 @@
     </style>
 </head>
 <body>
-
     <div class="main-container">
-        <!-- Khối tiêu đề phối 2 màu chuẩn Vintage Bronco mẫu -->
         <h1 class="app-title">
             <span class="brand-name">KateMath</span>
             <span class="ai-text">AI</span>
         </h1>
-
-        <!-- Khu vực nhập liệu điều khiển -->
         <div class="input-row">
             <div class="input-wrapper">
                 <input type="text" id="math-prompt" class="math-input" placeholder="Nhập đề bài toán vào đây...">
-                <button class="camera-btn" title="Tải ảnh bài toán" onclick="alert('Tính năng đang kết nối với module OCR nhận diện ảnh!')">📷</button>
+                <button class="camera-btn" title="Tải ảnh" onclick="alert('Tính năng đang kết nối module OCR!')">📷</button>
             </div>
-            <!-- Đã sửa đồng bộ hàm kích hoạt nút bấm tại đây -->
             <button class="submit-btn" onclick="processMathRequest()">Giải mã</button>
         </div>
-
-        <!-- Khung lớn nét đứt chứa kết quả và video mô phỏng -->
         <div class="result-box" id="display-zone">
             <p class="placeholder-text" id="status-message">Kết quả và video mô phỏng sẽ hiện ở đây</p>
         </div>
     </div>
-
-    <!-- Đoạn mã xử lý kết nối tự động với Máy chủ ảo Render thật -->
     <script>
         async function processMathRequest() {
             const promptInput = document.getElementById("math-prompt").value;
             const displayZone = document.getElementById("display-zone");
             const statusMessage = document.getElementById("status-message");
-
             if (!promptInput) {
                 alert("Vui lòng nhập đề bài toán trước khi giải mã!");
                 return;
             }
-
-            // Đổi dòng thông báo hiển thị chờ xử lý
             statusMessage.innerText = "KateMathAI đang giải toán và tạo video hoạt hoạt bằng Manim (Vui lòng đợi khoảng 1 phút)...";
-
             try {
-                // Đã nạp chính xác đường link server Render thật của bạn
                 const response = await fetch("https://onrender.com", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ prompt: promptInput })
                 });
-
                 if (!response.ok) throw new Error("Hệ thống xử lý trục trặc hoặc đề toán không hợp lệ.");
-
-                // Nhận luồng file video trả về từ Render
                 const videoBlob = await response.blob();
                 const videoUrl = URL.createObjectURL(videoBlob);
-
-                // Nhúng trình phát video vào khung nét đứt
                 displayZone.innerHTML = `<video class="output-video" src="${videoUrl}" controls autoplay></video>`;
-
             } catch (error) {
                 alert("Đã xảy ra lỗi hệ thống: " + error.message);
                 displayZone.innerHTML = `<p class="placeholder-text" id="status-message">Kết quả và video mô phỏng sẽ hiện ở đây</p>`;
             }
         }
     </script>
-
 </body>
 </html>
