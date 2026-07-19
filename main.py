@@ -6,7 +6,7 @@ from pydantic import BaseModel
 import google.generativeai as genai
 
 app = FastAPI()
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"], expose_headers=["*"])
 
 # DÒNG SỐ 13 CHÍNH LÀ ĐÂY NÈ BẠN:
 genai.configure(api_key="AQ.Ab8RN6Ieo5ljjxA1uYtMGrNqqK_lkPFvGzqOcDA3LmJ56Hy6rA")
