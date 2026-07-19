@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KateMathAI - Giải toán trực quan</title>
+    <style>
+        /* Tải phông chữ phong cách Bronco Vintage từ Google Fonts */
+        @import url('https://googleapis.com');
+
+        /* Thiết lập nền trình duyệt xám sẫm */
+        body {
+            background-color: #333639;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: "Times New Roman", Times, Georgia, serif;
+        }
+
+        /* Khung container chính giữ đúng tỷ lệ to rộng rộng rãi */
+        .main-container {
+            width: 95%;
+            max-width: 1000px;
+            background-color: #F4EAD4; /* Màu nền vàng kem vintage */
+            border: 20px solid #5A3516; /* Viền gỗ nâu dày dặn */
+            border-radius: 4px;
+            padding: 60px 50px;
+            box-shadow: 0px 15px 35px rgba(0, 0, 0, 0.6);
+            box-sizing: border-box;
+        }
+
+        /* Khối tiêu đề cấu trúc phông chữ Bronco cổ điển */
+        .app-title {
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 45px;
+            font-family: 'Rye', 'Georgia', 'Times New Roman', serif;
+            font-size: 58px;
+            line-height: 1.1;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            user-select: none;
+        }
+
+        /* Chữ KATEMATH - Tông màu nâu đỏ trầm giống dòng dưới ảnh mẫu */
+        .app-title .brand-name {
+            color: #613414; 
+            display: inline-block;
+            /* Tạo viền bóng mờ màu kem bao quanh để nổi khối nhẹ */
+            text-shadow: 2px 2px 0px #F4EAD4, 3px 3px 0px #5A3516;
+        }
+
+        /* Chữ AI - Tông màu nâu hạt dẻ đậm giống chữ BRONCO ở dòng trên */
+        .app-title .ai-text {
+            color: #613414; 
+            margin-left: 10px; /* Tách nhẹ chữ AI ra */
+            display: inline-block;
+            /* Tạo viền bóng mờ đồng bộ cấu trúc */
+            text-shadow: 2px 2px 0px #F4EAD4, 3px 3px 0px #5A3516;
+        }
+
+        /* Hàng điều khiển gồm ô nhập liệu và nút bấm */
+        .input-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 35px;
+            width: 100%;
+        }
+
+        .input-wrapper {
+            position: relative;
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Ô nhập đề bài to rộng */
+        .math-input {
+            width: 100%;
+            height: 52px;
+            padding: 0 60px 0 20px;
+            border: 1px solid #D1C5A5;
+            border-radius: 6px;
+            font-size: 18px;
+            font-family: "Times New Roman", Times, serif;
+            background-color: #FFFDF9;
+            color: #222;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+            box-sizing: border-box;
+        }
+
+        .math-input::placeholder {
+            color: #A69B82;
+            font-style: italic;
+        }
+
+        /* Nút biểu tượng camera */
+        .camera-btn {
+            position: absolute;
+            right: 18px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .camera-btn:hover {
+            opacity: 1;
+        }
+
+        /* Nút Giải mã màu nâu đậm bám sát ảnh mẫu */
+        .submit-btn {
+            background-color: #5A3516;
+            color: #FFFFFF;
+            border: none;
+            height: 52px;
+            padding: 0 40px;
+            font-size: 18px;
+            font-weight: bold;
+            font-family: "Times New Roman", Times, serif;
+            border-radius: 6px;
+            cursor: pointer;
+            white-space: nowrap;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+            transition: background-color 0.2s;
+        }
+
+        .submit-btn:hover {
+            background-color: #44270F;
+        }
+
+        /* Khung hiển thị kết quả nét đứt to rộng đúng tỷ lệ */
+        .result-box {
+            border: 2px dashed #CBBFA2;
+            min-height: 420px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            box-sizing: border-box;
+            background-color: transparent;
+        }
+
+        /* Chữ thông báo mặc định ở trung tâm nét đứt */
+        .placeholder-text {
+            font-size: 24px;
+            font-style: italic;
+            font-weight: bold;
+            color: #000000;
+            text-align: center;
+            margin: 0;
+            font-family: "Times New Roman", Times, serif;
+        }
+
+        /* Khung hiển thị video đầu ra */
+        .output-video {
+            width: 100%;
+            max-height: 400px;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <!-- Khối tiêu đề phối 2 màu chuẩn Vintage Bronco mẫu -->
+        <h1 class="app-title">
+            <span class="brand-name">KateMath</span>
+            <span class="ai-text">AI</span>
+        </h1>
+
+        <!-- Khu vực nhập liệu điều khiển -->
+        <div class="input-row">
+            <div class="input-wrapper">
+                <input type="text" id="math-prompt" class="math-input" placeholder="Nhập đề bài hoặc tải ảnh lên...">
+                <button class="camera-btn" title="Tải ảnh bài toán" onclick="alert('Tính năng đang kết nối với module OCR nhận diện ảnh!')">📷</button>
+            </div>
+            <button class="submit-btn" onclick="processMathRequest()">Giải mã</button>
+        </div>
+
+        <!-- Khung lớn nét đứt chứa kết quả và video mô phỏng -->
+        <div class="result-box" id="display-zone">
+            <p class="placeholder-text" id="status-message">Kết quả và video mô phỏng sẽ hiện ở đây</p>
+        </div>
+    </div>
+
+    <!-- Đoạn mã xử lý kết nối tự động với Máy chủ ảo Render -->
+    <script>
+        async function processMathRequest() {
+            const promptInput = document.getElementById("math-prompt").value;
+            const displayZone = document.getElementById("display-zone");
+            const statusMessage = document.getElementById("status-message");
+
+            if (!promptInput) {
+                alert("Vui lòng nhập đề bài toán trước khi giải mã!");
+                return;
+            }
+
+            statusMessage.innerText = "KateMathAI đang giải toán và tạo video hoạt hoạt bằng Manim (Vui lòng đợi khoảng 1 phút)...";
+
+            try {
+                const response = await fetch("https://onrender.com", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ prompt: promptInput })
+                });
+
+                if (!response.ok) throw new Error("Hệ thống xử lý trục trặc hoặc đề toán không hợp lệ.");
+
+                const videoBlob = await response.blob();
+                const videoUrl = URL.createObjectURL(videoBlob);
+
+                displayZone.innerHTML = `<video class="output-video" src="${videoUrl}" controls autoplay></video>`;
+
+            } catch (error) {
+                alert("Đã xảy ra lỗi: " + error.message);
+                statusMessage.innerText = "Kết quả và video mô phỏng sẽ hiện ở đây";
+            }
+        }
+    </script>
+
+</body>
+</html>
