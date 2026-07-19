@@ -46,18 +46,16 @@
 
         /* Chữ KATEMATH - Tông màu nâu đỏ trầm giống dòng dưới ảnh mẫu */
         .app-title .brand-name {
-            color: #613414; 
+            color: #A34828; 
             display: inline-block;
-            /* Tạo viền bóng mờ màu kem bao quanh để nổi khối nhẹ */
             text-shadow: 2px 2px 0px #F4EAD4, 3px 3px 0px #5A3516;
         }
 
         /* Chữ AI - Tông màu nâu hạt dẻ đậm giống chữ BRONCO ở dòng trên */
         .app-title .ai-text {
             color: #613414; 
-            margin-left: 10px; /* Tách nhẹ chữ AI ra */
+            margin-left: 25px; /* Tách nhẹ chữ AI ra */
             display: inline-block;
-            /* Tạo viền bóng mờ đồng bộ cấu trúc */
             text-shadow: 2px 2px 0px #F4EAD4, 3px 3px 0px #5A3516;
         }
 
@@ -181,9 +179,10 @@
         <!-- Khu vực nhập liệu điều khiển -->
         <div class="input-row">
             <div class="input-wrapper">
-                <input type="text" id="math-prompt" class="math-input" placeholder="Nhập đề bài hoặc tải ảnh lên...">
+                <input type="text" id="math-prompt" class="math-input" placeholder="Nhập đề bài toán vào đây...">
                 <button class="camera-btn" title="Tải ảnh bài toán" onclick="alert('Tính năng đang kết nối với module OCR nhận diện ảnh!')">📷</button>
             </div>
+            <!-- Đã sửa đồng bộ hàm kích hoạt nút bấm tại đây -->
             <button class="submit-btn" onclick="processMathRequest()">Giải mã</button>
         </div>
 
@@ -193,7 +192,7 @@
         </div>
     </div>
 
-    <!-- Đoạn mã xử lý kết nối tự động với Máy chủ ảo Render -->
+    <!-- Đoạn mã xử lý kết nối tự động với Máy chủ ảo Render thật -->
     <script>
         async function processMathRequest() {
             const promptInput = document.getElementById("math-prompt").value;
@@ -205,9 +204,11 @@
                 return;
             }
 
+            // Đổi dòng thông báo hiển thị chờ xử lý
             statusMessage.innerText = "KateMathAI đang giải toán và tạo video hoạt hoạt bằng Manim (Vui lòng đợi khoảng 1 phút)...";
 
             try {
+                // Đã nạp chính xác đường link server Render thật của bạn
                 const response = await fetch("https://onrender.com", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -216,14 +217,16 @@
 
                 if (!response.ok) throw new Error("Hệ thống xử lý trục trặc hoặc đề toán không hợp lệ.");
 
+                // Nhận luồng file video trả về từ Render
                 const videoBlob = await response.blob();
                 const videoUrl = URL.createObjectURL(videoBlob);
 
+                // Nhúng trình phát video vào khung nét đứt
                 displayZone.innerHTML = `<video class="output-video" src="${videoUrl}" controls autoplay></video>`;
 
             } catch (error) {
-                alert("Đã xảy ra lỗi: " + error.message);
-                statusMessage.innerText = "Kết quả và video mô phỏng sẽ hiện ở đây";
+                alert("Đã xảy ra lỗi hệ thống: " + error.message);
+                displayZone.innerHTML = `<p class="placeholder-text" id="status-message">Kết quả và video mô phỏng sẽ hiện ở đây</p>`;
             }
         }
     </script>
