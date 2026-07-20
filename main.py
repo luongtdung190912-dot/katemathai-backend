@@ -19,6 +19,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Khởi tạo client tự động nhận diện biến GEMINI_API_KEY chứa mã AQ...
 client = genai.Client()
 
 class MathRequest(BaseModel):
@@ -59,13 +60,10 @@ async def generate_math_video(request: MathRequest):
         class_match = re.search(r'class\s+(\w+)\s*\(', code)
         scene_name = class_match.group(1) if class_match else "MathScene"
 
-        # Thêm cờ -ql để render nhanh
         cmd = f"manim -pql {file_name} {scene_name}"
         process = subprocess.run(cmd, shell=True, capture_output=True, text=True)
 
         if process.returncode != 0:
-            print("--- MANIM ERROR ---")
-            print(process.stderr)
             raise HTTPException(status_code=500, detail=f"Lỗi chạy Manim: {process.stderr}")
 
         video_files = glob.glob(f"media/videos/**/{scene_name}.mp4", recursive=True)
@@ -76,11 +74,9 @@ async def generate_math_video(request: MathRequest):
         return FileResponse(latest_video, media_type="video/mp4", filename="math_solution.mp4")
 
     except Exception as e:
-        # In toàn bộ lỗi chi tiết ra Logs của Render
-        print("--- SERVER ERROR TRACEBACK ---")
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/")
 def read_root():
-    return {"message": "KateMathAI Backend đang chạy!"}
+    return {"message": "KateMathAI Backend đang chạy với mã AQ...!"}
