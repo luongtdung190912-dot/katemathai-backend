@@ -11,6 +11,7 @@ import google.generativeai as genai
 
 app = FastAPI()
 
+# Mở CORS toàn diện cho phép web gọi API và nhận video
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -20,8 +21,8 @@ app.add_middleware(
     expose_headers=["*"]
 )
 
-# Thay thế bằng API Key chuẩn của bạn (bắt đầu bằng AIza...)
-genai.configure(api_key="AQ.Ab8RN6I5ZNXCs7M8vGHn9AsEg3bPcZ--O7-FgJzem-9waigNgQ")
+# Cấu hình Gemini đọc trực tiếp từ biến môi trường trên Render
+genai.configure(api_key=os.environ.get("AQ.Ab8RN6IMO4qxgHO91Q6A67A6eITidyL5lBvInwM7nhV23YB_eg"))
 
 SYSTEM_PROMPT = "Bạn là lõi AI của 'KateMathAI'. Hãy nhận đề bài toán cấp 3 và TỰ ĐỘNG VIẾT CODE MANIM (PYTHON) để tạo video minh họa. Đặt tên Class chính là `MathSolution`, kế thừa từ `Scene`. CHỈ TRẢ VỀ ĐOẠN CODE PYTHON TRONG KHỐI MÃ ```python ... ```."
 
