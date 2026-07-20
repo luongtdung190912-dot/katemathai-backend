@@ -20,7 +20,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Khởi tạo client tự động nhận diện GEMINI_API_KEY
+# Tự động nhận diện biến GOOGLE_API_KEY
 client = genai.Client()
 
 class MathRequest(BaseModel):
@@ -53,8 +53,6 @@ async def generate_math_video(request: MathRequest):
         process = subprocess.run(cmd, shell=True, capture_output=True, text=True)
 
         if process.returncode != 0:
-            print("--- MANIM ERROR ---")
-            print(process.stderr)
             raise HTTPException(status_code=500, detail=f"Lỗi Manim: {process.stderr}")
 
         video_files = glob.glob(f"media/videos/**/{scene_name}.mp4", recursive=True)
@@ -65,10 +63,9 @@ async def generate_math_video(request: MathRequest):
         return FileResponse(latest_video, media_type="video/mp4", filename="math_solution.mp4")
 
     except Exception as e:
-        print("--- TRACEBACK ERROR ---")
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/")
 def read_root():
-    return {"message": "Backend đang chạy!"}
+    return {"message": "Backend đang chạy chuẩn xác!"}
