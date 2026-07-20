@@ -157,7 +157,7 @@
             }
             statusMessage.innerText = "KateMathAI đang giải toán và tạo video hoạt hoạt bằng Manim (Vui lòng đợi khoảng 1 phút)...";
             try {
-                const response = await fetch("https://katemathai-backend.onrender.com", {
+                const response = await fetch("https://katemathai-backend.onrender.com/generate-math-video/", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ prompt: promptInput })
