@@ -2,11 +2,13 @@ import os
 import subprocess
 import glob
 import re
+import traceback
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 
 app = FastAPI()
 
@@ -18,9 +20,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Cấu hình trực tiếp bằng GEMINI_API_KEY
-API_KEY = os.environ.get("AQ.Ab8RN6IMO4qxgHO91Q6A67A6eITidyL5lBvInwM7nhV23YB_eg")
-genai.configure(api_key=API_KEY)
+# Khởi tạo client tự động nhận diện GEMINI_API_KEY
+client = genai.Client()
 
 class MathRequest(BaseModel):
     prompt: str
@@ -28,10 +29,9 @@ class MathRequest(BaseModel):
 @app.post("/generate-math-video/")
 async def generate_math_video(request: MathRequest):
     try:
-        model = genai.GenerativeModel('gemini-1.5-flash')
-        response = model.generate_content(
-            f"Hãy viết MỘT ĐOẠN CODE PYTHON SỬ DỤNG MANIM hoàn chỉnh để giải bài toán sau. "
-            f"Chỉ trả về code Python trong khối ```python ... ```, không giải thích: {request.prompt}"
+        response = client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=f"Hãy viết MỘT ĐOẠN CODE PYTHON SỬ DỤNG MANIM hoàn chỉnh để giải bài toán sau. Chỉ trả về code Python trong khối ```python ... ```, không giải thích: {request.prompt}",
         )
         
         code_text = response.text
@@ -53,6 +53,8 @@ async def generate_math_video(request: MathRequest):
         process = subprocess.run(cmd, shell=True, capture_output=True, text=True)
 
         if process.returncode != 0:
+            print("--- MANIM ERROR ---")
+            print(process.stderr)
             raise HTTPException(status_code=500, detail=f"Lỗi Manim: {process.stderr}")
 
         video_files = glob.glob(f"media/videos/**/{scene_name}.mp4", recursive=True)
@@ -63,8 +65,10 @@ async def generate_math_video(request: MathRequest):
         return FileResponse(latest_video, media_type="video/mp4", filename="math_solution.mp4")
 
     except Exception as e:
+        print("--- TRACEBACK ERROR ---")
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/")
 def read_root():
-    return {"message": "KateMathAI Backend đang chạy với Gemini Key chuẩn!"}
+    return {"message": "Backend đang chạy!"}
