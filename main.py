@@ -7,8 +7,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
-from google import genai
-from google.genai import types
+import google.generativeai as genai
 
 app = FastAPI()
 
@@ -20,9 +19,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Lấy trực tiếp từ biến môi trường GOOGLE_API_KEY và ép thư viện nhận diện đúng chuẩn API Key
-api_key = os.environ.get("GOOGLE_API_KEY")
-client = genai.Client(api_key=api_key)
+# Cấu hình API key của Google lấy trực tiếp từ biến môi trường
+api_key = os.environ.get("AIzaSyCiI6j5wQpZ2pW7AbS70EE81P2hrW5H46E")
+genai.configure(api_key=api_key)
 
 class MathRequest(BaseModel):
     prompt: str
@@ -30,9 +29,10 @@ class MathRequest(BaseModel):
 @app.post("/generate-math-video/")
 async def generate_math_video(request: MathRequest):
     try:
-        response = client.models.generate_content(
-            model='gemini-2.5-flash',
-            contents=f"Hãy viết MỘT ĐOẠN CODE PYTHON SỬ DỤNG MANIM hoàn chỉnh để giải bài toán sau. Chỉ trả về code Python trong khối ```python ... ```, không giải thích: {request.prompt}",
+        # Sử dụng model flash chuẩn của Google
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        response = model.generate_content(
+            f"Hãy viết MỘT ĐOẠN CODE PYTHON SỬ DỤNG MANIM hoàn chỉnh để giải bài toán sau. Chỉ trả về code Python trong khối ```python ... ```, không giải thích: {request.prompt}"
         )
         
         code_text = response.text
@@ -69,4 +69,4 @@ async def generate_math_video(request: MathRequest):
 
 @app.get("/")
 def read_root():
-    return {"message": "Backend đang chạy mượt mà!"}
+    return {"message": "KateMathAI Backend đang chạy với mã Google chuẩn!"}
