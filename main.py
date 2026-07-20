@@ -25,7 +25,18 @@ SYSTEM_PROMPT = "Bạn là lõi AI của 'KateMathAI'. Hãy nhận đề bài to
 class MathRequest(BaseModel):
     prompt: str
 
+import traceback
+
 @app.post("/generate-math-video/")
+async def generate_video(request: MathRequest):
+    try:
+        # Toàn bộ code xử lý gọi AI và chạy Manim hiện tại của bạn ở đây...
+        
+    except Exception as e:
+        error_trace = traceback.format_exc()
+        print("=== CHI TIẾT LỖI PYTHON ===")
+        print(error_trace)
+        raise HTTPException(status_code=500, detail=str(e))
 async def generate_video(request: MathRequest):
     session_id = str(uuid.uuid4())[:8]
     script_filename = f"/tmp/scene_{session_id}.py"
