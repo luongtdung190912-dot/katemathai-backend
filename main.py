@@ -18,7 +18,7 @@ app.add_middleware(
 )
 
 # Cấu hình khóa API Key của bạn
-genai.configure(api_key="AQ.Ab8RN6KCYk1XOOt0u9gQAYCi25Hrk5RC-Oczjlfwr9b-SOLODQ")
+genai.configure(api_key="AQ.Ab8RN6I5ZNXCs7M8vGHn9AsEg3bPcZ--O7-FgJzem-9waigNgQ")
 
 SYSTEM_PROMPT = "Bạn là lõi AI của 'KateMathAI'. Hãy nhận đề bài toán cấp 3 và TỰ ĐỘNG VIẾT CODE MANIM (PYTHON) để tạo video minh họa. Đặt tên Class chính là `MathSolution`, kế thừa từ `Scene`. CHỈ TRẢ VỀ ĐOẠN CODE PYTHON TRONG KHỐI MÃ ```python ... ```."
 
