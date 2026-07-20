@@ -20,8 +20,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Tự động nhận diện biến GOOGLE_API_KEY
-client = genai.Client()
+# Lấy trực tiếp từ biến môi trường GOOGLE_API_KEY và ép thư viện nhận diện đúng chuẩn API Key
+api_key = os.environ.get("GOOGLE_API_KEY")
+client = genai.Client(api_key=api_key)
 
 class MathRequest(BaseModel):
     prompt: str
@@ -68,4 +69,4 @@ async def generate_math_video(request: MathRequest):
 
 @app.get("/")
 def read_root():
-    return {"message": "Backend đang chạy chuẩn xác!"}
+    return {"message": "Backend đang chạy mượt mà!"}
