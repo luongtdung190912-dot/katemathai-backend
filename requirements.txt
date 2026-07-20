@@ -1,5 +1,5 @@
 fastapi
-uvicorn
+uvicorn[standard]
 manim
 google-generativeai
 pydantic
