@@ -19,7 +19,7 @@ app.add_middleware(
 )
 
 # Lấy API key từ biến môi trường (đặt trên Render: Environment -> GEMINI_API_KEY)
-api_key = os.environ.get("AQ.Ab8RN6IMO4qxgHO91Q6A67A6eITidyL5lBvInwM7nhV23YB_eg")
+api_key = os.environ.get("AQ.Ab8RN6Kff9Xm0P_BHj1R-Z2E6tPF-Xd6QnbcdGtvpB7xeH7Rag")
 if not api_key:
     raise RuntimeError(
         "Thiếu biến môi trường GEMINI_API_KEY. Hãy set nó trong Render Dashboard -> Environment."
