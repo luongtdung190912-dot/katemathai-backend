@@ -10,7 +10,6 @@ from pydantic import BaseModel
 import google.generativeai as genai
 
 app = FastAPI()
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -19,22 +18,30 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Cấu hình API key của Google lấy trực tiếp từ biến môi trường
-api_key = os.environ.get("AIzaSyCiI6j5wQpZ2pW7AbS70EE81P2hrW5H46E")
+# Lấy API key từ biến môi trường (đặt trên Render: Environment -> GEMINI_API_KEY)
+api_key = os.environ.get("AQ.Ab8RN6IMO4qxgHO91Q6A67A6eITidyL5lBvInwM7nhV23YB_eg")
+if not api_key:
+    raise RuntimeError(
+        "Thiếu biến môi trường GEMINI_API_KEY. Hãy set nó trong Render Dashboard -> Environment."
+    )
 genai.configure(api_key=api_key)
+
 
 class MathRequest(BaseModel):
     prompt: str
+
 
 @app.post("/generate-math-video/")
 async def generate_math_video(request: MathRequest):
     try:
         # Sử dụng model flash chuẩn của Google
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        model = genai.GenerativeModel("gemini-1.5-flash")
         response = model.generate_content(
-            f"Hãy viết MỘT ĐOẠN CODE PYTHON SỬ DỤNG MANIM hoàn chỉnh để giải bài toán sau. Chỉ trả về code Python trong khối ```python ... ```, không giải thích: {request.prompt}"
+            "Hãy viết MỘT ĐOẠN CODE PYTHON SỬ DỤNG MANIM hoàn chỉnh để giải bài toán sau. "
+            "Chỉ trả về code Python trong khối ```python ... ```, không giải thích: "
+            f"{request.prompt}"
         )
-        
+
         code_text = response.text
         if "```python" in code_text:
             code = code_text.split("```python")[1].split("```")[0].strip()
@@ -47,11 +54,11 @@ async def generate_math_video(request: MathRequest):
         with open(file_name, "w", encoding="utf-8") as f:
             f.write(code)
 
-        class_match = re.search(r'class\s+(\w+)\s*\(', code)
+        class_match = re.search(r"class\s+(\w+)\s*\(", code)
         scene_name = class_match.group(1) if class_match else "MathScene"
 
-        cmd = f"manim -pql {file_name} {scene_name}"
-        process = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+        cmd = ["manim", "-pql", file_name, scene_name]
+        process = subprocess.run(cmd, capture_output=True, text=True)
 
         if process.returncode != 0:
             raise HTTPException(status_code=500, detail=f"Lỗi Manim: {process.stderr}")
@@ -63,9 +70,12 @@ async def generate_math_video(request: MathRequest):
         latest_video = max(video_files, key=os.path.getctime)
         return FileResponse(latest_video, media_type="video/mp4", filename="math_solution.mp4")
 
+    except HTTPException:
+        raise
     except Exception as e:
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.get("/")
 def read_root():
