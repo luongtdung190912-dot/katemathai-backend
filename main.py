@@ -7,18 +7,18 @@ import google.generativeai as genai
 
 app = FastAPI()
 
-# Cấu hình CORS dỡ bỏ hoàn toàn mọi rào cản bảo mật trình duyệt
+# KHẮC PHỤC LỖI CORS: Mở khóa toàn diện cho phép GitHub Pages truy cập và đọc file video
 app.add_middleware(
-    CORSMiddleware, 
-    allow_origins=["*"], 
-    allow_credentials=False, 
-    allow_methods=["*"], 
-    allow_headers=["*"],
-    expose_headers=["*"]
+    CORSMiddleware,
+    allow_origins=["*"],          # Cho phép mọi nguồn (bao gồm github.io của bạn) gọi vào
+    allow_credentials=False,
+    allow_methods=["*"],          # Cho phép mọi phương thức (POST, GET...)
+    allow_headers=["*"],          # Cho phép mọi loại Header dữ liệu gửi lên
+    expose_headers=["*"]          # BẮT BUỘC: Cho phép trình duyệt nhìn thấy và tải file video về
 )
 
 # Cấu hình khóa API Key của bạn
-genai.configure(api_key="AQ.Ab8RN6IlVJcT-3gxgQhb4XUrTue2tEul0l4e2Ayd0rxSrryEsg")
+genai.configure(api_key="AQ.Ab8RN6KCYk1XOOt0u9gQAYCi25Hrk5RC-Oczjlfwr9b-SOLODQ")
 
 SYSTEM_PROMPT = "Bạn là lõi AI của 'KateMathAI'. Hãy nhận đề bài toán cấp 3 và TỰ ĐỘNG VIẾT CODE MANIM (PYTHON) để tạo video minh họa. Đặt tên Class chính là `MathSolution`, kế thừa từ `Scene`. CHỈ TRẢ VỀ ĐOẠN CODE PYTHON TRONG KHỐI MÃ ```python ... ```."
 
@@ -28,8 +28,6 @@ class MathRequest(BaseModel):
 @app.post("/generate-math-video/")
 async def generate_video(request: MathRequest):
     session_id = str(uuid.uuid4())[:8]
-    
-    # Ép buộc hệ thống ghi file vào thư mục tạm /tmp của Linux Render
     script_filename = f"/tmp/scene_{session_id}.py"
     video_output_dir = f"/tmp/media_{session_id}"
     
@@ -42,7 +40,6 @@ async def generate_video(request: MathRequest):
         with open(script_filename, "w", encoding="utf-8") as f:
             f.write(code_match.group(1).strip())
             
-        # Lệnh chạy Manim ghi đè trực tiếp vào thư mục tạm hệ thống
         cmd = f"manim -ql --media_dir {video_output_dir} {script_filename} MathSolution"
         subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         
